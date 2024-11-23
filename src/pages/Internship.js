@@ -13,27 +13,32 @@ const Internship = () => {
             rootMargin: '0px',
             threshold: 0.1,
         };
-
+    
+        // Store a stable reference to the current value of sectionsRef
+        const sections = sectionsRef.current;
+    
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    setVisible((prev) => ({ ...prev, [entry.target.id]: true }));
-                } else {
-                    setVisible((prev) => ({ ...prev, [entry.target.id]: false }));
-                }
+                setVisible((prev) => ({
+                    ...prev,
+                    [entry.target.id]: entry.isIntersecting,
+                }));
             });
         }, options);
-
-        sectionsRef.current.forEach((section) => {
+    
+        // Observe each section
+        sections.forEach((section) => {
             if (section) observer.observe(section);
         });
-
+    
+        // Cleanup
         return () => {
-            sectionsRef.current.forEach((section) => {
+            sections.forEach((section) => {
                 if (section) observer.unobserve(section);
             });
         };
     }, []);
+    
 
     return (
         <div className="internship-container">
